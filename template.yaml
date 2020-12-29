@@ -1,0 +1,21 @@
+Resources:
+  HelloRustFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      FunctionName: HelloRust
+      Handler: bootstrap.is.real.handler
+      CodeUri: .
+      Runtime: provided
+      Timeout: 300
+      MemorySize: 2048
+      Environment:
+        Variables:
+          MAINTENANCE_MODE: false
+      Events:
+        GatewayEvent:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
