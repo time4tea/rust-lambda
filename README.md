@@ -18,13 +18,20 @@ Need:
  - rust
  - sam
 
+In some shell...
 ```
  sam --debug build
  sam local start-api
 ```
 
-in another shell
+In another shell...
+```
+make watch
+```
+
+In yet another shell...
 ```
  curl -XPOST http://127.0.0.1:3000/bob
 ```
 
+now you can edit the code, and see it liveish...

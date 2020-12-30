@@ -1,11 +1,24 @@
 
-ifndef ARTIFACTS_DIR
-$(error ARTIFACTS_DIR is not set)
-endif
+ARCH=x86_64-unknown-linux-musl
+
+ARTIFACTS_DIR?=.aws-sam/build/HelloRustFunction
+BOOTSTRAP=$(ARTIFACTS_DIR)/bootstrap
 
 # just changing this to be "the lambda i'm trying to write"
 LAMBDA=convert
 
 build-HelloRustFunction:
-	cargo build --release --target x86_64-unknown-linux-musl
-	cp ./target/x86_64-unknown-linux-musl/release/$(LAMBDA) $(ARTIFACTS_DIR)/bootstrap
+	cargo build --release --target $(ARCH)
+	cp ./target/$(ARCH)/release/$(LAMBDA) $(BOOTSTRAP)
+
+
+.PHONY: all
+all: build-HelloRustFunction
+
+.PHONY: watch
+watch:
+	while true; \
+	do \
+		inotifywait -r src; \
+		$(MAKE) all; \
+	done

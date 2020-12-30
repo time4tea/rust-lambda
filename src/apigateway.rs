@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use http::{HeaderValue, Request, Version};
+use http::{HeaderValue, Request, Version, Response};
 use http::header::HeaderName;
 use serde::{Deserialize, Serialize};
-use serde::export::TryFrom;
 
 #[derive(Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -32,10 +31,25 @@ pub struct ApiGatewayResponse {
     pub is_base64_encoded: bool,
 }
 
-impl TryFrom<ApiGatewayRequest> for Request<String> {
-    type Error = http::Error;
+impl From<Response<String>> for ApiGatewayResponse {
+    fn from(value: Response<String>) -> Self {
 
-    fn try_from(value: ApiGatewayRequest) -> Result<Self, Self::Error> {
+        let mut headers: HashMap<String,String> = HashMap::new();
+        for ( key, value) in  value.headers().iter() {
+            headers.insert(key.to_string(), String::from(value.to_str().unwrap()));
+        }
+
+        ApiGatewayResponse {
+            body: value.body().clone(),
+            status_code: value.status().as_u16() as i32,
+            is_base64_encoded: false,
+            headers
+        }
+    }
+}
+
+impl From<ApiGatewayRequest> for Request<String> {
+    fn from(value: ApiGatewayRequest) -> Self {
         let mut r = Request::builder()
             .method(value.http_method.as_str())
             .uri(value.path.as_str())
@@ -51,7 +65,7 @@ impl TryFrom<ApiGatewayRequest> for Request<String> {
             Some(v) => v
         };
 
-        r.body(b.to_string())
+        r.body(b.to_string()).unwrap()
     }
 }
 
