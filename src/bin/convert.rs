@@ -6,9 +6,13 @@ use lambda_runtime::{Context, error::HandlerError, lambda};
 use lambda_utils::apigateway::ApiGatewayRequest;
 use lambda_utils::apigateway::ApiGatewayResponse;
 use http::header::HeaderValue;
+use tokio::runtime::Runtime;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    lambda!(lambda_handler);
+
+    let runtime = Runtime::new().unwrap();
+
+    lambda!(lambda_handler, runtime);
     Ok(())
 }
 

@@ -8,6 +8,7 @@ edition = "2018"
 name="lambda_utils"
 
 [dependencies]
+tokio = "0.1.22"
 lambda_runtime = "0.2.1"
 lambda_runtime_core = "0.1.2"
 serde = { version = "^1.0", features = ["derive"] }
