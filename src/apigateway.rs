@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use http::{Error, HeaderValue, Request, Version};
+use http::{HeaderValue, Request, Version};
 use http::header::HeaderName;
 use serde::{Deserialize, Serialize};
+use serde::export::TryFrom;
 
 #[derive(Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -31,20 +32,21 @@ pub struct ApiGatewayResponse {
     pub is_base64_encoded: bool,
 }
 
-impl ApiGatewayRequest {
-    pub fn as_http_request(&self) -> Result<Request<String>, Error> {
+impl TryFrom<ApiGatewayRequest> for Request<String> {
+    type Error = http::Error;
+
+    fn try_from(value: ApiGatewayRequest) -> Result<Self, Self::Error> {
         let mut r = Request::builder()
-            .method(self.http_method.as_str())
-            .uri(self.path.as_str())
+            .method(value.http_method.as_str())
+            .uri(value.path.as_str())
             .version(Version::HTTP_11);
 
-        for (name, value) in self.headers.iter() {
+        for (name, value) in value.headers.iter() {
             r = r.header(HeaderName::from_str(name.as_str()).unwrap(), HeaderValue::from_str(value.as_str()).unwrap());
         }
 
-
         let x = String::new();
-        let b = match &self.body {
+        let b = match &value.body {
             None => &x,
             Some(v) => v
         };
@@ -52,5 +54,4 @@ impl ApiGatewayRequest {
         r.body(b.to_string())
     }
 }
-
 

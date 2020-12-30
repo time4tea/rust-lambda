@@ -1,6 +1,8 @@
 use std::collections::HashMap;
+use std::convert::TryFrom;
 use std::error::Error;
 
+use http::Request;
 use lambda_runtime::{Context, error::HandlerError, lambda};
 
 use lambda_utils::apigateway::ApiGatewayRequest;
@@ -13,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 /// respond to an API Gateway Proxy Request with some static content
 fn lambda_handler(req: ApiGatewayRequest, _c: Context) -> Result<ApiGatewayResponse, HandlerError> {
-    let response = req.as_http_request()
+    let response = Request::try_from(req)
         .map(|r| {
             println!("{:?}", r);
             ApiGatewayResponse {
