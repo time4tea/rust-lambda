@@ -12,7 +12,7 @@ Resources:
       MemorySize: 2048
       Environment:
         Variables:
-          MAINTENANCE_MODE: false
+          SOME_VARIABLE: false
       Events:
         GatewayEvent:
           Type: Api
