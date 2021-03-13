@@ -14,6 +14,11 @@ Resources:
         Variables:
           SOME_VARIABLE: false
       Events:
+        RootEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: any
         GatewayEvent:
           Type: Api
           Properties:

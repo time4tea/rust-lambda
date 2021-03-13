@@ -15,6 +15,10 @@ build-HelloRustFunction:
 .PHONY: all
 all: build-HelloRustFunction
 
+.PHONY: local
+local:
+	sam local start-api
+
 .PHONY: watch
 watch:
 	while true; \

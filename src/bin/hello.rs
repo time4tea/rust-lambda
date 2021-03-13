@@ -13,10 +13,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 /// respond to an API Gateway Proxy Request with some static content
 fn lambda_handler(_e: ApiGatewayRequest, _c: Context) -> Result<ApiGatewayResponse, HandlerError> {
-    Ok(ApiGatewayResponse {
+
+    println!("Invoked!");
+
+    let response = ApiGatewayResponse {
         body: "Hello".to_string(),
         headers: HashMap::new(),
         is_base64_encoded: false,
         status_code: 200,
-    })
+    };
+
+    Ok(response)
 }
